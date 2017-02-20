@@ -8,6 +8,7 @@ import View
 
 {-| Startup.
 -}
+main : Program Never Model Msg
 main =
     Html.program
         { init = State.init
