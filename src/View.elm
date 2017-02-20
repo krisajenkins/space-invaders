@@ -10,6 +10,6 @@ import View.Svg
 root : Model -> Html Msg
 root model =
     div []
-        [ code [] [ text <| toString model ]
+        [ div [] [ code [] [ text <| toString model ] ]
         , View.Svg.root model
         ]

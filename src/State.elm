@@ -6,6 +6,39 @@ import Response exposing (..)
 import Types exposing (..)
 
 
+perRow : Int
+perRow =
+    10
+
+
+wavePosition : Int -> Position
+wavePosition n =
+    { x = (n % perRow)
+    , y = (n // perRow)
+    }
+
+
+scale : Position -> Position -> Position
+scale d { x, y } =
+    { x = x * d.x
+    , y = y * d.y
+    }
+
+
+translate : Position -> Position -> Position
+translate d { x, y } =
+    { x = x + d.x
+    , y = y + d.y
+    }
+
+
+initAlien : Position -> Alien
+initAlien position =
+    { position = position
+    , isAlive = True
+    }
+
+
 init : Response Model Msg
 init =
     ( { ship =
@@ -14,6 +47,13 @@ init =
                 , y = 0
                 }
             }
+      , aliens =
+            (List.range 0 20)
+                |> List.map wavePosition
+                |> List.map (scale { x = 400, y = 300 })
+                |> List.map (translate { x = -2000, y = -4000 })
+                |> List.map initAlien
+      , shots = []
       }
     , Cmd.none
     )
@@ -23,17 +63,17 @@ update : Msg -> Model -> Response Model Msg
 update msg model =
     case msg of
         MoveLeft ->
-            ( { model | ship = moveShip -10 model.ship }
+            ( { model | ship = move { x = -10, y = 0 } model.ship }
             , Cmd.none
             )
 
         MoveRight ->
-            ( { model | ship = moveShip 10 model.ship }
+            ( { model | ship = move { x = 10, y = 0 } model.ship }
             , Cmd.none
             )
 
         Tick delta ->
-            ( model
+            ( { model | aliens = List.map (move { x = 0, y = 1 }) model.aliens }
             , Cmd.none
             )
 
@@ -43,13 +83,13 @@ update msg model =
             )
 
 
-moveShip : Int -> Ship -> Ship
-moveShip delta ship =
+move : Position -> { a | position : Position } -> { a | position : Position }
+move delta thing =
     let
         position =
-            ship.position
+            thing.position
     in
-        { ship | position = { position | x = position.x + delta } }
+        { thing | position = translate delta position }
 
 
 subscriptions : Model -> Sub Msg
