@@ -49,7 +49,7 @@ update msg model =
 
         Tick delta ->
             ( { model
-                | aliens = List.map (move { x = 0, y = alienSize // 30 }) model.aliens
+                | aliens = List.map (move { x = 0, y = alienSize // 40 }) model.aliens
                 , shots = List.map moveShot model.shots
               }
                 |> resolveCollisions
