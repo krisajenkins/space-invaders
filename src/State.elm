@@ -6,32 +6,6 @@ import Response exposing (..)
 import Types exposing (..)
 
 
-perRow : Int
-perRow =
-    10
-
-
-wavePosition : Int -> Position
-wavePosition n =
-    { x = (n % perRow)
-    , y = (n // perRow)
-    }
-
-
-scale : Position -> Position -> Position
-scale d { x, y } =
-    { x = x * d.x
-    , y = y * d.y
-    }
-
-
-translate : Position -> Position -> Position
-translate d { x, y } =
-    { x = x + d.x
-    , y = y + d.y
-    }
-
-
 initAlien : Position -> Alien
 initAlien position =
     { position = position
@@ -125,24 +99,6 @@ resolveCollisions model =
         }
 
 
-prune : Model -> Model
-prune model =
-    let
-        isStillOnScreen { x, y } =
-            -5000 < y && y <= 600
-    in
-        { model
-            | aliens =
-                model.aliens
-                    |> List.filter (.position >> isStillOnScreen)
-                    |> List.filter .isAlive
-            , shots =
-                model.shots
-                    |> List.filter (.position >> isStillOnScreen)
-                    |> List.filter .isAlive
-        }
-
-
 resolveAlienCollisions : ( List Shot, Alien ) -> ( List Shot, Alien )
 resolveAlienCollisions ( shots, alien ) =
     let
@@ -176,8 +132,10 @@ resolveAlienCollisions ( shots, alien ) =
                         (shot.position.y + (shotHeight // 2))
 
                     isMiss =
-                        ((shotRight < alienLeft) || (alienRight < shotLeft))
-                            || ((shotBottom < alienTop) || (alienBottom < shotTop))
+                        (shotRight < alienLeft)
+                            || (alienRight < shotLeft)
+                            || (shotBottom < alienTop)
+                            || (alienBottom < shotTop)
                 in
                     if isMiss then
                         ( shot :: oldShots
@@ -191,18 +149,22 @@ resolveAlienCollisions ( shots, alien ) =
         List.foldl considerOneShot ( [], alien ) shots
 
 
-move : Position -> { a | position : Position } -> { a | position : Position }
-move delta thing =
+prune : Model -> Model
+prune model =
     let
-        position =
-            thing.position
+        isStillOnScreen { x, y } =
+            -5000 < y && y <= 600
     in
-        { thing | position = translate delta position }
-
-
-moveShot : Shot -> Shot
-moveShot shot =
-    { shot | position = translate shot.direction shot.position }
+        { model
+            | aliens =
+                model.aliens
+                    |> List.filter (.position >> isStillOnScreen)
+                    |> List.filter .isAlive
+            , shots =
+                model.shots
+                    |> List.filter (.position >> isStillOnScreen)
+                    |> List.filter .isAlive
+        }
 
 
 subscriptions : Model -> Sub Msg

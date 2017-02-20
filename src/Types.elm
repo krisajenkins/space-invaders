@@ -59,3 +59,43 @@ shotWidth =
 shotHeight : Int
 shotHeight =
     180
+
+
+perRow : Int
+perRow =
+    10
+
+
+wavePosition : Int -> Position
+wavePosition n =
+    { x = (n % perRow)
+    , y = (n // perRow)
+    }
+
+
+scale : Position -> Position -> Position
+scale d { x, y } =
+    { x = x * d.x
+    , y = y * d.y
+    }
+
+
+translate : Position -> Position -> Position
+translate d { x, y } =
+    { x = x + d.x
+    , y = y + d.y
+    }
+
+
+move : Position -> { a | position : Position } -> { a | position : Position }
+move delta thing =
+    let
+        position =
+            thing.position
+    in
+        { thing | position = translate delta position }
+
+
+moveShot : Shot -> Shot
+moveShot shot =
+    { shot | position = translate shot.direction shot.position }
