@@ -7,6 +7,7 @@ type Msg
     = MoveLeft
     | MoveRight
     | Tick Time
+    | Fire
     | Noop
 
 
@@ -29,6 +30,7 @@ type alias Alien =
 type alias Shot =
     { position : Position
     , direction : Position
+    , isAlive : Bool
     }
 
 
@@ -37,3 +39,23 @@ type alias Model =
     , aliens : List Alien
     , shots : List Shot
     }
+
+
+shipSize : Int
+shipSize =
+    100
+
+
+alienSize : Int
+alienSize =
+    180
+
+
+shotWidth : Int
+shotWidth =
+    20
+
+
+shotHeight : Int
+shotHeight =
+    180
