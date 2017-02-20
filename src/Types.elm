@@ -18,7 +18,9 @@ type alias Position =
 
 
 type alias Ship =
-    { position : Position }
+    { position : Position
+    , isAlive : Bool
+    }
 
 
 type alias Alien =

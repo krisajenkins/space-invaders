@@ -20,6 +20,7 @@ init =
                 { x = 0
                 , y = 0
                 }
+            , isAlive = True
             }
       , aliens =
             (List.range 0 20)
@@ -52,6 +53,7 @@ update msg model =
                 , shots = List.map moveShot model.shots
               }
                 |> resolveCollisions
+                |> resolveDeath
                 |> prune
             , Cmd.none
             )
@@ -147,6 +149,21 @@ resolveAlienCollisions ( shots, alien ) =
                         )
     in
         List.foldl considerOneShot ( [], alien ) shots
+
+
+resolveDeath : Model -> Model
+resolveDeath model =
+    let
+        ship =
+            model.ship
+
+        noCrash =
+            model.aliens
+                |> List.filter .isAlive
+                |> List.filter (.position >> .y >> (<) (model.ship.position.y - (shipSize // 2)))
+                |> List.isEmpty
+    in
+        { model | ship = { ship | isAlive = noCrash } }
 
 
 prune : Model -> Model

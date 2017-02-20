@@ -7,7 +7,7 @@ import View.Svg
 
 root : Model -> Html Msg
 root model =
-    div []
-        [ View.Svg.root model
-        , div [] [ code [] [ text <| toString model ] ]
-        ]
+    if model.ship.isAlive then
+        View.Svg.root model
+    else
+        h1 [] [ text "Y U NO ALIVE???" ]
