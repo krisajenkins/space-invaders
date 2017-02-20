@@ -1,9 +1,12 @@
 module Types exposing (..)
 
+import Time exposing (Time)
+
 
 type Msg
     = MoveLeft
     | MoveRight
+    | Tick Time
     | Noop
 
 

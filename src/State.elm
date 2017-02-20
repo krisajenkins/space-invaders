@@ -1,5 +1,6 @@
 module State exposing (..)
 
+import AnimationFrame
 import Keyboard exposing (KeyCode)
 import Response exposing (..)
 import Types exposing (..)
@@ -31,6 +32,11 @@ update msg model =
             , Cmd.none
             )
 
+        Tick delta ->
+            ( model
+            , Cmd.none
+            )
+
         Noop ->
             ( model
             , Cmd.none
@@ -48,12 +54,15 @@ moveShip delta ship =
 
 subscriptions : Model -> Sub Msg
 subscriptions model =
-    Keyboard.presses readKey
+    Sub.batch
+        [ Keyboard.presses readKey
+        , AnimationFrame.diffs Tick
+        ]
 
 
 readKey : KeyCode -> Msg
 readKey keyCode =
-    case Debug.log "KC" keyCode of
+    case keyCode of
         97 ->
             MoveLeft
 
