@@ -91,11 +91,7 @@ translate d { x, y } =
 
 move : Position -> { a | position : Position } -> { a | position : Position }
 move delta thing =
-    let
-        position =
-            thing.position
-    in
-        { thing | position = translate delta position }
+    { thing | position = translate delta position.thing }
 
 
 moveShot : Shot -> Shot
